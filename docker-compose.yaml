@@ -1,0 +1,101 @@
+version: "3.9"
+
+services:
+
+  controller:
+    build:
+      context: .
+      dockerfile: Dockerfile.controller
+    image: ansible-controller:latest
+    container_name: ansible-controller
+    hostname: controller
+    networks:
+      - ansiblenet
+    volumes:
+      - ./ansible:/ansible
+    tty: true
+
+  # Dummy build service (build once)
+  build-node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: ansible-node:latest
+    profiles: ["build-only"]  # runs during up if image missing
+
+  # ------------ NODES (all use same image) -------------
+
+  node1:
+    image: ansible-node:latest
+    container_name: node1
+    hostname: node1
+    networks:
+      - ansiblenet
+
+  node2:
+    image: ansible-node:latest
+    container_name: node2
+    hostname: node2
+    networks:
+      - ansiblenet
+
+  node3:
+    image: ansible-node:latest
+    container_name: node3
+    hostname: node3
+    networks:
+      - ansiblenet
+
+  node4:
+    image: ansible-node:latest
+    container_name: node4
+    hostname: node4
+    networks:
+      - ansiblenet
+
+  node5:
+    image: ansible-node:latest
+    container_name: node5
+    hostname: node5
+    networks:
+      - ansiblenet
+
+  node6:
+    image: ansible-node:latest
+    container_name: node6
+    hostname: node6
+    networks:
+      - ansiblenet
+
+  node7:
+    image: ansible-node:latest
+    container_name: node7
+    hostname: node7
+    networks:
+      - ansiblenet
+
+  node8:
+    image: ansible-node:latest
+    container_name: node8
+    hostname: node8
+    networks:
+      - ansiblenet
+
+  node9:
+    image: ansible-node:latest
+    container_name: node9
+    hostname: node9
+    networks:
+      - ansiblenet
+
+  node10:
+    image: ansible-node:latest
+    container_name: node10
+    hostname: node10
+    networks:
+      - ansiblenet
+
+networks:
+  ansiblenet:
+    driver: bridge
+

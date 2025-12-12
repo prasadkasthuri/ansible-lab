@@ -1,0 +1,25 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Ansible and basic tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ansible sshpass openssh-client python3 python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create workspace
+RUN mkdir -p /ansible /etc/ansible
+WORKDIR /ansible
+
+# Auto-generate inventory with Python interpreter set
+RUN printf "[nodes]\nnode[1:10]\n\n[nodes:vars]\n\
+ansible_user=ansible\n\
+ansible_password=ansible\n\
+ansible_become=true\n\
+ansible_become_method=sudo\n\
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'\n\
+ansible_python_interpreter=/usr/bin/python3\n" \
+> /etc/ansible/hosts
+
+CMD ["bash"]
