@@ -2,7 +2,7 @@
 
 services:
 
-  # --------- CONTROLLER (builds its own image) ---------
+  # --------- CONTROLLER ---------
   controller:
     build:
       context: .
@@ -15,22 +15,22 @@ services:
     volumes:
       - ./ansible:/ansible
     tty: true
+    depends_on:
+      - node-image   # controller waits for image to exist
 
-  # --------- NODE IMAGE BUILDER (build once, reuse everywhere) ---------
+  # --------- IMAGE BUILDER (build once) ---------
   node-image:
     build:
       context: .
       dockerfile: Dockerfile.node
     image: ansible-node:latest
     container_name: node-image
-    hostname: node-image
     networks:
       - ansiblenet
     command: ["sleep", "infinity"]
-    # This service exists only so the image gets built.
-    # It just sleeps; you can ignore this container.
+    # This container only exists to produce the ansible-node image
 
-  # --------- NODES (all use the same built image) ---------
+  # --------- NODES (reuse built image) ---------
   node1:
     image: ansible-node:latest
     container_name: node1
