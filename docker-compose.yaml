@@ -2,6 +2,7 @@
 
 services:
 
+  # --------- CONTROLLER (builds its own image) ---------
   controller:
     build:
       context: .
@@ -15,17 +16,29 @@ services:
       - ./ansible:/ansible
     tty: true
 
-  # ------------ NODES (node1 builds the image, others reuse it) -------------
-
-  node1:
+  # --------- NODE IMAGE BUILDER (build once, reuse everywhere) ---------
+  node-image:
     build:
       context: .
       dockerfile: Dockerfile.node
+    image: ansible-node:latest
+    container_name: node-image
+    hostname: node-image
+    networks:
+      - ansiblenet
+    command: ["sleep", "infinity"]
+    # This service exists only so the image gets built.
+    # It just sleeps; you can ignore this container.
+
+  # --------- NODES (all use the same built image) ---------
+  node1:
     image: ansible-node:latest
     container_name: node1
     hostname: node1
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node2:
     image: ansible-node:latest
@@ -33,6 +46,8 @@ services:
     hostname: node2
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node3:
     image: ansible-node:latest
@@ -40,6 +55,8 @@ services:
     hostname: node3
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node4:
     image: ansible-node:latest
@@ -47,6 +64,8 @@ services:
     hostname: node4
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node5:
     image: ansible-node:latest
@@ -54,6 +73,8 @@ services:
     hostname: node5
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node6:
     image: ansible-node:latest
@@ -61,6 +82,8 @@ services:
     hostname: node6
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node7:
     image: ansible-node:latest
@@ -68,6 +91,8 @@ services:
     hostname: node7
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node8:
     image: ansible-node:latest
@@ -75,6 +100,8 @@ services:
     hostname: node8
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node9:
     image: ansible-node:latest
@@ -82,6 +109,8 @@ services:
     hostname: node9
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
   node10:
     image: ansible-node:latest
@@ -89,6 +118,8 @@ services:
     hostname: node10
     networks:
       - ansiblenet
+    depends_on:
+      - node-image
 
 networks:
   ansiblenet:
