@@ -7,7 +7,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.controller
-    image: ansible-controller:latest
     container_name: ansible-controller
     hostname: controller
     networks:
@@ -15,111 +14,98 @@ services:
     volumes:
       - ./ansible:/ansible
     tty: true
-    depends_on:
-      - node-image   # controller waits for image to exist
 
-  # --------- IMAGE BUILDER (build once) ---------
-  node-image:
+  # --------- NODES (all build from same Dockerfile.node, using build cache) ---------
+
+  node1:
     build:
       context: .
       dockerfile: Dockerfile.node
-    image: ansible-node:latest
-    container_name: node-image
-    networks:
-      - ansiblenet
-    command: ["sleep", "infinity"]
-    # This container only exists to produce the ansible-node image
-
-  # --------- NODES (reuse built image) ---------
-  node1:
-    image: ansible-node:latest
     container_name: node1
     hostname: node1
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node2:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node2
     hostname: node2
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node3:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node3
     hostname: node3
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node4:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node4
     hostname: node4
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node5:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node5
     hostname: node5
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node6:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node6
     hostname: node6
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node7:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node7
     hostname: node7
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node8:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node8
     hostname: node8
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node9:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node9
     hostname: node9
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
   node10:
-    image: ansible-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: node10
     hostname: node10
     networks:
       - ansiblenet
-    depends_on:
-      - node-image
 
 networks:
   ansiblenet:
